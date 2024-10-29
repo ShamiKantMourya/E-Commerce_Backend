@@ -28,44 +28,53 @@ exports.postAddProduct = (req, res, next) => {
     });
 };
 
-// exports.getEditProduct = (req, res, next) => {
-//   const editMode = req.query.edit;
-//   if (!editMode) {
-//     return res.redirect("/");
-//   }
-//   const productId = req.params.productId;
-//   Product.findById(productId, (product) => {
-//     if (!product) {
-//       return res.redirect("/");
-//     }
-//     res.render("admin/edit-product", {
-//       pageTitle: "Edit Product",
-//       path: "/admin/edit-product",
-//       editing: editMode,
-//       product: product,
-//     });
-//   });
-// };
+exports.getEditProduct = (req, res, next) => {
+  const editMode = req.query.edit;
+  if (!editMode) {
+    return res.redirect("/");
+  }
+  const productId = req.params.productId;
+  Product.findById(productId).then((product) => {
+    if (!product) {
+      return res.redirect("/");
+    }
+    res.render("admin/edit-product", {
+      pageTitle: "Edit Product",
+      path: "/admin/edit-product",
+      editing: editMode,
+      product: product,
+    });
+  });
+};
 
-// exports.postEditProduct = (req, res, next) => {
-//   const productId = req.body.productId;
-//   const updatedTitle = req.body.title;
-//   const UpdatedImageUrl = req.body.imageUrl;
-//   const updatedPrice = req.body.price;
-//   const updatedDes = req.body.description;
+exports.postEditProduct = (req, res, next) => {
+  const productId = req.body.productId;
+  const updatedTitle = req.body.title;
+  const UpdatedImageUrl = req.body.imageUrl;
+  const updatedPrice = req.body.price;
+  const updatedDes = req.body.description;
 
-//   const updatedProduct = new Product(
-//     productId,
-//     updatedTitle,
-//     UpdatedImageUrl,
-//     updatedDes,
-//     updatedPrice
-//   );
+  Product.findById(productId).then((productData) => {
+    const product = new Product(
+      updatedTitle,
+      updatedPrice,
+      updatedDes,
+      UpdatedImageUrl,
+      productId
+    );
+    product
+      .save()
+      .then((result) => {
+        console.log(result);
+        res.redirect("/admin/products");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
 
-//   updatedProduct.save();
-
-//   res.redirect('/admin/products');
-// };
+  res.redirect("/admin/products");
+};
 
 exports.getProducts = (req, res, next) => {
   Product.fetchAll()
