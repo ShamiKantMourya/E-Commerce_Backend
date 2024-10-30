@@ -20,6 +20,7 @@ const mongoConnect = (callback) => {
 };
 
 const getDb = () => {
+  // console.log("getDb called");
   if (_db) {
     return _db;
   }
