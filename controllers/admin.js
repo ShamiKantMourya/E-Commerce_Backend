@@ -12,13 +12,21 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = (req, res, next) => {
-  const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
-  const price = req.body.price;
-  const description = req.body.description;
-  const userId = req.user._id;  
-  console.log(req.user, "hey id")
-  const product = new Product(title, price, description, imageUrl, null, userId);
+  if (!req.user || !req.user._id) {
+    console.log("User or user ID is missing");
+    return res.status(400).send("User not found");
+  }
+  const { title, imageUrl, price, description } = req.body;
+  const userId = req.user._id;
+  console.log(userId, "userId")
+  const product = new Product(
+    title,
+    price,
+    description,
+    imageUrl,
+    null,
+    userId
+  );
   product
     .save()
     .then((result) => {
