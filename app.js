@@ -20,14 +20,15 @@ const shopRoutes = require("./routes/shop");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/admin", adminRoutes);
-app.use(shopRoutes);
 
 app.use((req, res, next) => {
-  User.findById('67209a76a3a09cb1a469a4b9')
+  User.findById("67209a76a3a09cb1a469a4b9")
     .then((user) => {
-      console.log(user, "app user")
-      req.user = user;
+      // console.log(user, "app user");
+      if (!user) {
+        throw new Error("User not found");
+      }
+      req.user = new User(user.name, user.email, user.cart, user._id);
       next();
     })
     .catch((err) => {
@@ -35,8 +36,11 @@ app.use((req, res, next) => {
     });
 });
 
+app.use("/admin", adminRoutes);
+app.use(shopRoutes);
+
 app.use(errorController.get404);
 
 mongoConnect(() => {
-  app.listen(3000);
+  app.listen(8000);
 });
