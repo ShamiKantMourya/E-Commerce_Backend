@@ -5,11 +5,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const errorController = require("./controllers/error");
-// const db = require('./util/database');
-const { mongoConnect } = require("./util/database");
+const dataBaseConnect = require("./util/database");
 const User = require("./models/user");
 
 const app = express();
+dataBaseConnect();
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -20,15 +20,28 @@ const shopRoutes = require("./routes/shop");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
+User.findOne().then((user) => {
+  if (!user) {
+    const user = new User({
+      name: "Arnav",
+      email: "arnav@gmail.com",
+      cart: {
+        item: [],
+      },
+    });
+    user.save();
+  }
+});
+
 
 app.use((req, res, next) => {
-  User.findById("67209a76a3a09cb1a469a4b9")
+  User.findById("6725eea9d912e61732c5a8ac")
     .then((user) => {
       // console.log(user, "app user");
       if (!user) {
         throw new Error("User not found");
       }
-      req.user = new User(user.name, user.email, user.cart, user._id);
+      req.user = user;
       next();
     })
     .catch((err) => {
@@ -41,6 +54,4 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoConnect(() => {
-  app.listen(8000);
-});
+app.listen(8000);
