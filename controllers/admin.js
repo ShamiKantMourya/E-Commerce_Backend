@@ -17,13 +17,12 @@ exports.postAddProduct = (req, res, next) => {
   //   return res.status(400).send("User not found");
   // }
   const { title, imageUrl, price, description } = req.body;
-  // const userId = req.user._id;
-  // console.log(userId, "userId")
   const product = new Product({
     title: title,
     price: price,
     description: description,
     imageUrl: imageUrl,
+    userId: req.user,
   });
   product
     .save()
@@ -82,6 +81,7 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
   Product.find()
+    // .populate("userId")
     .then((products) => {
       res.render("admin/products", {
         prods: products,
