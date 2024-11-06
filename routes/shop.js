@@ -14,14 +14,14 @@ router.get('/products', shopController.getProducts);
 //Get product details
 router.get('/products/:productId', shopController.getProduct);
 
-// //Get cart product
-// router.get('/cart', shopController.getCartProducts);
+//Get cart product
+router.get('/cart', shopController.getCartProducts);
 
-// //Add to cart
-// router.post('/cart', shopController.postCart);
+//Add to cart
+router.post('/cart', shopController.postCart);
 
-// //Delete cart product
-// router.post('/delete-cart-product', shopController.deleteCartProduct);
+//Delete cart product
+router.post('/delete-cart-product', shopController.deleteCartProduct);
 
 // //Create order
 // router.post('/create-order', shopController.postOrders);
