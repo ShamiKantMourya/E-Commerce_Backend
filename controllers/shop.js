@@ -1,9 +1,11 @@
+const mongoose = require("mongoose");
+
 const Product = require("../models/product");
 const Cart = require("../models/cart");
 
 exports.getProducts = (req, res, next) => {
   Product.find().then((products) => {
-    console.log(products, "getProducts");
+    // console.log(products, "getProducts");
     res.render("shop/product-list", {
       prods: products,
       pageTitle: "All Products",
@@ -39,8 +41,9 @@ exports.getIndex = (req, res, next) => {
 
 exports.getCartProducts = (req, res, next) => {
   req.user
-    .getCart()
-    .then((products) => {
+    .populate("cart.items.productId")
+    .then((user) => {
+      const products = user.cart.items;
       res.render("shop/cart", {
         path: "/cart",
         pageTitle: "Your Cart",
@@ -55,12 +58,24 @@ exports.getCartProducts = (req, res, next) => {
 exports.postCart = (req, res, next) => {
   // console.log(req, "req")
   const productId = req.body.productId;
+  // console.log(productId, "product id in post cart");
+  // Check if productId is valid
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    console.log("Invalid product ID");
+    return res.status(400).send("Invalid product ID");
+  }
+
   Product.findById(productId)
     .then((product) => {
+      console.log(product, "postcart product");
+      if (!product) {
+        console.log("Product not found");
+        return res.status(404).send("Product not found");
+      }
       return req.user.addToCart(product);
     })
     .then((result) => {
-      console.log(result, "post cart fn");
+      // console.log(result, "post cart fn");
       res.redirect("/cart");
     });
 };
@@ -93,7 +108,7 @@ exports.getOrder = (req, res, next) => {
   req.user
     .getOrders()
     .then((orders) => {
-      console.log(orders, "orders")
+      console.log(orders, "orders");
       res.render("shop/orders", {
         path: "/orders",
         pageTitle: "Your Orders",
