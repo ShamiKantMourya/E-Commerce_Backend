@@ -20,19 +20,6 @@ const shopRoutes = require("./routes/shop");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-User.findOne().then((user) => {
-  if (!user) {
-    const user = new User({
-      name: "Arnav",
-      email: "arnav@gmail.com",
-      cart: {
-        item: [],
-      },
-    });
-    user.save();
-  }
-});
-
 
 app.use((req, res, next) => {
   User.findById("6725eea9d912e61732c5a8ac")
@@ -47,6 +34,19 @@ app.use((req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
+});
+
+User.findOne().then((user) => {
+  if (!user) {
+    const user = new User({
+      name: "Arnav",
+      email: "arnav@gmail.com",
+      cart: {
+        item: [],
+      },
+    });
+    user.save();
+  }
 });
 
 app.use("/admin", adminRoutes);
