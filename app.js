@@ -48,18 +48,6 @@ app.use((req, res, next) => {
     .catch(err => console.log(err));
 });
 
-// User.findOne().then((user) => {
-//   if (!user) {
-//     const user = new User({
-//       name: "Arnav",
-//       email: "arnav@gmail.com",
-//       cart: {
-//         item: [],
-//       },
-//     });
-//     user.save();
-//   }
-// });
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
