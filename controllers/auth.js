@@ -21,7 +21,6 @@ exports.getSignup = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  // console.log(email, password, "login");
   User.findOne({ email: email })
     .then((user) => {
       if (!user) {
@@ -31,7 +30,6 @@ exports.postLogin = (req, res, next) => {
         .compare(password, user.password)
         .then((doMatch) => {
           if (doMatch) {
-            // console.log(doMatch);
             req.session.isLoggedIn = true;
             req.session.user = user;
             return req.session.save((err) => {
@@ -54,7 +52,6 @@ exports.postSignup = (req, res, next) => {
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
 
-  // console.log(email, password);
 
   User.findOne({ email: email })
     .then((userDoc) => {
